@@ -1,0 +1,17 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    padding: 50px;
+}
+
+.pets-list img {
+    max-width: 200px;
+}
+
+.pets-list div {
+    border: 1px solid #111;
+    border-radius: 2px;
+    margin: 10px 0px;
+}
