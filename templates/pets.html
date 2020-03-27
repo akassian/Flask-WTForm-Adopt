@@ -14,5 +14,11 @@
             {% endif %}
         </div>
     {% endfor %}
+    <h2>Petfinder Pet of the Moment:</h2>
+        <div>
+            <img src="{{petfinder.photo_url}}">
+            <h3>{{petfinder.name}}</h3>
+            <p>{{petfinder.age}}</p>
+        </div>
 </section>
 {% endblock %}

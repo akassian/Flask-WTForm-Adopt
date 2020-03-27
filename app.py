@@ -2,6 +2,8 @@ from flask import Flask, render_template, request, redirect, flash
 from flask_debugtoolbar import DebugToolbarExtension
 from models import db, connect_db, Pet
 from forms import AddPetForm, EditPetForm
+from petfinder_access import API_KEY, SECRET_KEY
+import requests
 
 app = Flask(__name__)
 
@@ -17,6 +19,23 @@ app.config['SQLALCHEMY_ECHO'] = True
 connect_db(app)
 
 DEFAULT_PIC = "https://images.pexels.com/photos/356079/pexels-photo-356079.jpeg?auto=compress&cs=tinysrgb&h=750&w=1260"
+auth_token = None
+
+@app.before_first_request
+def refresh_credentials():
+    global auth_token
+    auth_token = update_auth_token_string()
+
+def update_auth_token_string():
+    resp = requests.post("https://api.petfinder.com/v2/oauth2/token", data={
+        "grant_type": "client_credentials",
+        "client_id": f"{API_KEY}",
+        "client_secret": f"{SECRET_KEY}"
+        })
+    resp = resp.json()
+
+    return resp.get("access_token", resp)
+
 
 @app.route("/")
 def home():
@@ -27,7 +46,17 @@ def home():
 
     pets = Pet.query.all()
 
-    return render_template("/pets.html", pets=pets)
+    resp = requests.get("https://api.petfinder.com/v2/animals", 
+                params={"limit":"1", "sort":"random"},
+                headers={"Authorization": f"Bearer {auth_token}"})
+    
+    resp = resp.json()
+    resp = resp["animals"][0]
+    print("\n\n\n This is your petfinder:", resp, "\n\n\n")
+    
+    petfinder = {"age":resp["age"], "name":resp["name"], "photo_url":resp["photos"][0]["medium"]}
+    
+    return render_template("/pets.html", pets=pets, petfinder=petfinder)
 
 @app.route("/add", methods=["GET", "POST"])
 def add_pet():
