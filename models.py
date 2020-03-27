@@ -19,7 +19,7 @@ class Pet(db.Model):
     name = db.Column(db.String(30),
                            nullable=False)
     species = db.Column(db.String(30),
-                           nullable=False) 
+                           nullable=False)
     photo_url = db.Column(db.String, default = "https://images.pexels.com/photos/356079/pexels-photo-356079.jpeg?auto=compress&cs=tinysrgb&h=750&w=1260")
     age = db.Column(db.String, nullable=False)
     notes = db.Column(db.String(400))

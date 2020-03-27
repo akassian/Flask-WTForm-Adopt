@@ -1,0 +1,29 @@
+{% extends "base.html" %} {% block title %}Andrei's Adoption Agency{% endblock
+%} {% block content %}
+<h1>Andrei's Adoption Agency</h1>
+<section class="pets-list">
+  <div>
+    <h3>{{pet.name}}</h3>
+    <img src="{{pet.photo_url}}" />
+    <h4>{{pet.age}}</h4>
+    <h4>{{pet.species}}</h4>
+    <p>{{pet.notes}}</p>
+    {% if pet.available %}
+    <strong>AVAILABLE</strong>
+    {% endif %}
+  </div>
+</section>
+<h1>Edit Pet</h1>
+
+<form id="pet-edit-form" method="POST">
+  {{ form.hidden_tag() }} {% for field in form if field.widget.input_type !=
+  'hidden' %}
+  <p>
+    {{ field.label }} {{ field }} {% for error in field.errors %} {{ error }} {%
+    endfor %}
+  </p>
+  {% endfor %}
+
+  <button type="submit">Submit</button>
+</form>
+{% endblock %}
